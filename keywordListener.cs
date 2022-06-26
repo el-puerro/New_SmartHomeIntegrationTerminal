@@ -15,13 +15,43 @@ namespace SmartHomeIntegrationTerminal
 {
     class keywordListener
     {
+        private boolean isActive = false;
         private boolean keywordFound;
+        private string[] availableNames;
 
 
-        public keywordListener(string[] devices, string[] IPs)
+        public void initialize()
         {
-            setDevices(devices, IPs);
+            this.keywordFound = false;
             SpeechRecognizer sr = new SpeechRecognizer();
+            Choices names = new Choices();
+            names.Add(this.availableNames);
+            GrammarBuilder gb = new GrammarBuilder();
+            gb.Append(names);
+            Grammar g = new Grammar(gb);
+
+            sr.SpeechRecognized += new EventHandler<SpeechRecognizedEventArgs>(sr_SpeechRecognized);
+            this.isActive = true;
         }
+
+        void sr_SpeechRecognized()
+        {
+            this.keywordFound = true;
+        }
+
+
+        public keywordListener(string[] names)
+        {
+            // setDevices(devices, IPs);
+            setNames(names);
+            initialize();
+        }
+
+        public void setNames(string[] names)
+        {
+            this.availableNames = names;
+        }
+
+
     }
 }
